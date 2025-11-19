@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBDP | Sarah's Lens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+            },
+            colors: {
+                brand: {
+                    dark: '#0f172a',
+                    accent: '#cca43b', 
+                    surface: '#1e293b'
+                }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      .spinner {
+        border: 3px solid rgba(255,255,255,0.1);
+        border-radius: 50%;
+        border-top: 3px solid #cca43b;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-brand-dark text-slate-300 min-h-screen font-sans selection:bg-brand-accent selection:text-brand-dark">
+
+    <!-- Navigation Bar -->
+    <nav class="border-b border-slate-700 bg-brand-dark/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-brand-accent rounded-sm flex items-center justify-center text-brand-dark font-bold text-xl font-serif">K</div>
+                <span class="text-xl font-serif text-slate-100 tracking-wide">KBDP <span class="text-brand-accent text-sm font-sans uppercase tracking-widest ml-2">Investment Dashboard</span></span>
+            </div>
+            <div class="text-xs font-medium text-brand-accent border border-brand-accent/30 px-3 py-1 rounded-full">
+                Tool: Sarah's Lens Protocol
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-10">
+        
+        <!-- Configuration Section -->
+        <div class="bg-brand-surface rounded-xl border border-slate-700 p-6 mb-8 shadow-lg">
+            <h2 class="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                System Configuration
+            </h2>
+            <div class="flex gap-4 items-end">
+                <div class="flex-grow">
+                    <label class="block text-xs text-slate-400 mb-1">Google Gemini API Key</label>
+                    <input type="password" id="apiKey" class="w-full bg-brand-dark border border-slate-600 rounded px-4 py-2 text-white focus:border-brand-accent focus:outline-none transition-colors placeholder-slate-600" placeholder="Paste key starting with AIza...">
+                </div>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-brand-accent hover:text-white underline pb-2">Get Key &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Main Analysis Input -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <!-- Company Data -->
+            <div class="flex flex-col">
+                <label class="flex justify-between text-slate-200 font-semibold mb-2">
+                    <span>Corporate Values (ESG Report)</span>
+                    <span class="text-xs text-slate-500 font-normal">Paste from Annual Report</span>
+                </label>
+                <textarea id="companyValues" class="flex-grow h-64 bg-brand-surface border border-slate-700 rounded-lg p-4 text-sm focus:border-brand-accent focus:outline-none resize-none" placeholder="Example: 'We are committed to a net-zero future by 2030. We prioritize diversity in leadership...'"></textarea>
+            </div>
+            
+            <!-- CEO Data -->
+            <div class="flex flex-col">
+                <label class="flex justify-between text-slate-200 font-semibold mb-2">
+                    <span>CEO Public Statements</span>
+                    <span class="text-xs text-slate-500 font-normal">Paste from Tweets/Interviews</span>
+                </label>
+                <textarea id="ceoStatements" class="flex-grow h-64 bg-brand-surface border border-slate-700 rounded-lg p-4 text-sm focus:border-brand-accent focus:outline-none resize-none" placeholder="Example: 'Drilling costs are down! We are expanding production rapidly to maximize Q4 profits...'"></textarea>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="flex justify-center mb-12">
+            <button id="analyzeButton" onclick="runAnalysis()" class="group relative px-8 py-4 bg-brand-accent text-brand-dark font-bold rounded-lg shadow-lg hover:shadow-brand-accent/20 transition-all transform hover:-translate-y-1">
+                <div class="flex items-center gap-3">
+                    <span class="group-hover:scale-110 transition-transform">Run Sarah's Lens Analysis</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                </div>
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsArea" class="hidden space-y-8">
+            
+            <!-- Main Alignment Report -->
+            <div class="bg-brand-surface border border-slate-700 rounded-xl overflow-hidden shadow-2xl">
+                <div class="bg-slate-800/50 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                    <h3 class="font-serif text-xl text-white">Alignment Analysis Report</h3>
+                    <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded border border-green-700">AI Generated</span>
+                </div>
+                <div id="mainOutput" class="p-8 text-slate-300 whitespace-pre-wrap leading-relaxed"></div>
+            </div>
+
+            <!-- Next Steps Toolbar -->
+            <div class="grid md:grid-cols-2 gap-6">
+                
+                <!-- Engagement Tool -->
+                <div class="bg-brand-surface border border-slate-700 rounded-xl p-6 hover:border-brand-accent/50 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-serif text-lg text-white">Escalation Protocol</h4>
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6 h-10">Generate targeted interview questions for the CEO to probe the misalignments found above.</p>
+                    <button onclick="generateQuestions()" id="btnQuestions" class="w-full py-3 border border-slate-600 rounded hover:bg-slate-700 hover:border-slate-500 text-slate-200 transition-all flex justify-center items-center gap-2">
+                        Generate Questions
+                    </button>
+                    <div id="questionsOutput" class="hidden mt-4 p-4 bg-brand-dark rounded border border-slate-700 text-sm text-slate-300 whitespace-pre-wrap"></div>
+                </div>
+
+                <!-- Memo Tool -->
+                <div class="bg-brand-surface border border-slate-700 rounded-xl p-6 hover:border-brand-accent/50 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-serif text-lg text-white">Investment Committee</h4>
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6 h-10">Draft a formal investment memo summarizing the "Sarah's Lens" findings for the final decision.</p>
+                    <button onclick="draftMemo()" id="btnMemo" class="w-full py-3 border border-slate-600 rounded hover:bg-slate-700 hover:border-slate-500 text-slate-200 transition-all flex justify-center items-center gap-2">
+                        Draft Memo
+                    </button>
+                    <div id="memoOutput" class="hidden mt-4 p-4 bg-brand-dark rounded border border-slate-700 text-sm text-slate-300 whitespace-pre-wrap"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // 1. Define all UI Elements
+        const inputs = {
+            key: document.getElementById('apiKey'),
+            values: document.getElementById('companyValues'),
+            ceo: document.getElementById('ceoStatements')
+        };
+
+        const containers = {
+            results: document.getElementById('resultsArea'),
+            main: document.getElementById('mainOutput'),
+            questions: document.getElementById('questionsOutput'),
+            memo: document.getElementById('memoOutput')
+        };
+
+        // 2. Initialize: Check for Saved Key
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('KBDP_GEMINI_KEY');
+            if (savedKey) {
+                inputs.key.value = savedKey;
+            }
+        });
+
+        // 3. Save Key on Input
+        inputs.key.addEventListener('input', (e) => {
+            localStorage.setItem('KBDP_GEMINI_KEY', e.target.value);
+        });
+
+        // 4. Core Function to Call Gemini API
+        async function callGemini(prompt, loadingElementId) {
+            const apiKey = inputs.key.value.trim();
+            if (!apiKey) { alert("Please enter your API Key at the top."); return null; }
+
+            // Double check we saved the key
+            localStorage.setItem('KBDP_GEMINI_KEY', apiKey);
+
+            const btn = document.getElementById(loadingElementId);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<div class="spinner"></div>`;
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error.message);
+                return data.candidates[0].content.parts[0].text;
+
+            } catch (e) {
+                alert("Error: " + e.message);
+                return null;
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // 5. Button Function: Main Analysis
+        async function runAnalysis() {
+            if(!inputs.values.value || !inputs.ceo.value) { alert("Please enter both Company Values and CEO Statements."); return; }
+            
+            const prompt = `
+                Act as a Senior ESG Analyst for KBDP. Perform a 'Sarah's Lens' alignment analysis.
+                Compare the Company Values against the CEO Statements provided below.
+                
+                Report Format:
+                1. **Alignment Score (0-10)**
+                2. **Executive Summary** (Professional tone, 3 sentences max)
+                3. **Evidence of Misalignment** (Bullet points)
+                4. **Evidence of Alignment** (Bullet points)
+
+                Company Values: ${inputs.values.value}
+                CEO Statements: ${inputs.ceo.value}
+            `;
+
+            const result = await callGemini(prompt, 'analyzeButton');
+            if (result) {
+                containers.main.textContent = result;
+                containers.results.classList.remove('hidden');
+                // Smooth scroll to results
+                containers.results.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 6. Button Function: Generate Questions
+        async function generateQuestions() {
+            const prompt = `
+                Based on the previous context of Company Values (${inputs.values.value}) and CEO Statements (${inputs.ceo.value}), 
+                generate 5 hard-hitting, investigatory interview questions for the CEO to determine if they are truly committed to the company's ESG goals or if they are greenwashing.
+            `;
+            const result = await callGemini(prompt, 'btnQuestions');
+            if (result) {
+                containers.questions.textContent = result;
+                containers.questions.classList.remove('hidden');
+            }
+        }
+
+        // 7. Button Function: Draft Memo
+        async function draftMemo() {
+            const prompt = `
+                Write a formal Investment Committee Memo regarding this company.
+                Use the 'Sarah's Lens' framework. 
+                Summarize the alignment analysis between: 
+                Values: ${inputs.values.value}
+                and CEO: ${inputs.ceo.value}.
+                
+                Conclude with a definitive recommendation: PROCEED or DIVEST.
+            `;
+            const result = await callGemini(prompt, 'btnMemo');
+            if (result) {
+                containers.memo.textContent = result;
+                containers.memo.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
